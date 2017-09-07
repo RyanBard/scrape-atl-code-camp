@@ -12,6 +12,14 @@ Another thing that was annoying was the lack of an obvious class to use on the t
 
 Tested in Python 2.7.6
 
+It also requires having [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/) installed.
+
+In a debian based system:
+
+```shell
+sudo apt-get install python-bs4
+```
+
 ## Usage
 
 ```shell

@@ -1,6 +1,6 @@
 import requests, bs4
 
-# sudo apt-get install python-bs4 python3-bs4
+# sudo apt-get install python-bs4
 
 
 def escape_string_quotes(s):
