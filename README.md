@@ -8,6 +8,10 @@ I also initially screwed up when string quotes were in the string (since I'm jus
 
 Another thing that was annoying was the lack of an obvious class to use on the time slots' markup.  It took a little tinkering with the css selectors to find the right bootstrap class to identify the divs and headers and such that I wanted.
 
+## Python Version
+
+Tested in Python 2.7.6
+
 ## Usage
 
 ```shell
