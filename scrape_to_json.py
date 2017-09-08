@@ -1,55 +1,37 @@
-import requests, bs4
+import requests, bs4, json
 
 # sudo apt-get install python-bs4
 
 
-def escape_string_quotes(s):
-    return s.replace('"', '\\"')
-
-
-def format_session(session):
-    info = session.findChildren()
-    data = {
-        'title': escape_string_quotes(info[0].getText()),
-        'presenter': escape_string_quotes(info[1].getText()),
-        'room': escape_string_quotes(info[2].getText().replace('Room: ', '')),
-        'category': escape_string_quotes(info[3].getText().replace('Category: ', ''))
+def extract_session(session_elements):
+    info = session_elements.findChildren()
+    return {
+        'title': info[0].getText(),
+        'presenter': info[1].getText(),
+        'room': info[2].getText().replace('Room: ', ''),
+        'category': info[3].getText().replace('Category: ', '')
     }
-    # print(session)
-    return u'''                {{
-                    "title": "{title}",
-                    "presenter": "{presenter}",
-                    "room": "{room}",
-                    "category": "{category}"
-                }}'''.format(**data).encode('ascii', 'replace')
 
 
-def format_time_slot(i, time_slot):
-    sessions = time_slot.select('div.schedule-item')
-    begin = '''        {{
-            "name": "Slot {index}",
-            "sessions": [
-'''.format(index = i + 1)
-    middle = ',\n'.join(map(format_session, sessions))
-    end = '''
-            ]
-        }'''
-    return begin + middle + end
+def extract_time_slot(i, time_slot):
+    session_elements = time_slot.select('div.schedule-item')
+    sessions = map(extract_session, session_elements)
+    return {
+        'name': 'Slot {index}'.format(index = i + 1),
+        'sessions': sessions
+    }
     
 
 def main():
     res = requests.api.request('get', 'https://atlantacodecamp.com/2017/Schedule', verify=False)
     res.raise_for_status()
     soup = bs4.BeautifulSoup(res.text)
-    time_slots = soup.select('div.col-lg-11 > div.row')
-    result = '''{
-    "slots": [
-'''
-    result += ',\n'.join(map(lambda (i, time_slot): format_time_slot(i, time_slot), enumerate(time_slots)))
-    result += '''
-    ]
-}'''
-    print(result)
+    time_slot_elements = soup.select('div.col-lg-11 > div.row')
+    time_slots = map(lambda (i, time_slot): extract_time_slot(i, time_slot), enumerate(time_slot_elements))
+    result = {
+        'slots': time_slots
+    }
+    print(json.dumps(result, sort_keys = True, indent = 4))
 
 if __name__ == '__main__':
     main()

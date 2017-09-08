@@ -6,6 +6,8 @@ What's interesting so far is the unicode characters people threw in (which blew 
 
 I also initially screwed up when string quotes were in the string (since I'm just printing it, it produced invalid JSON).
 
+An obvious lesson from this is don't write your own JSON code (which I knew, but you have to find an excuse to exercise in new languages, and I cleaned it up after anyway).
+
 Another thing that was annoying was the lack of an obvious class to use on the time slots' markup.  It took a little tinkering with the css selectors to find the right bootstrap class to identify the divs and headers and such that I wanted.
 
 ## Python Version
@@ -25,7 +27,3 @@ sudo apt-get install python-bs4
 ```shell
 python scrape_to_json.py > data.json
 ```
-
-## TODO
-* Populate a dict and use a JSON library instead of the hacky thing you've done
-* After that, try putting the unicode back to unicode instead of replacing it with ?s
