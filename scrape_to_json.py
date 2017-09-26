@@ -1,6 +1,7 @@
 import requests, bs4, json
 
 # sudo apt-get install python-bs4
+# sudo apt-get install python-requests
 
 
 def extract_session(session_elements):
@@ -25,7 +26,7 @@ def extract_time_slot(i, time_slot):
 def main():
     res = requests.api.request('get', 'https://atlantacodecamp.com/2017/Schedule', verify=False)
     res.raise_for_status()
-    soup = bs4.BeautifulSoup(res.text)
+    soup = bs4.BeautifulSoup(res.text, 'lxml')
     time_slot_elements = soup.select('div.col-lg-11 > div.row')
     time_slots = map(lambda (i, time_slot): extract_time_slot(i, time_slot), enumerate(time_slot_elements))
     result = {
