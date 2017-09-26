@@ -2,8 +2,8 @@ import requests
 import bs4
 import json
 
-# sudo apt-get install python-bs4
-# sudo apt-get install python-requests
+# sudo apt-get install python3-bs4
+# sudo apt-get install python3-requests
 
 
 def extract_session(session_elements):
@@ -21,7 +21,7 @@ def extract_time_slot(i, time_slot):
     sessions = map(extract_session, session_elements)
     return {
         'name': 'Slot {index}'.format(index=i + 1),
-        'sessions': sessions
+        'sessions': list(sessions)
     }
 
 
@@ -32,14 +32,14 @@ def main():
             verify=False
     )
     res.raise_for_status()
-    soup = bs4.BeautifulSoup(res.text, 'lxml')
+    soup = bs4.BeautifulSoup(res.text, 'html.parser')
     time_slot_elements = soup.select('div.col-lg-11 > div.row')
-    time_slots = map(
-            lambda (i, time_slot): extract_time_slot(i, time_slot),
-            enumerate(time_slot_elements)
-    )
+    time_slots = [
+            extract_time_slot(i, time_slot)
+            for i, time_slot in enumerate(time_slot_elements)
+    ]
     result = {
-        'slots': time_slots
+        'slots': list(time_slots)
     }
     print(json.dumps(result, sort_keys=True, indent=4))
 
